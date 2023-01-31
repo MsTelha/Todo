@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./Todo.css";
 function Todo() {
   const [input, setInput] = useState("");
@@ -62,6 +63,13 @@ function Todo() {
       setInput("");
     }
   };
+/////////////////////////////////////////////      clickHandler /////////////////////////////////////////////////////
+
+useEffect(()=>{
+  axios("https://jsonplaceholder.typicode.com/posts").then((res)=>{
+      setItems(res.data)
+  })
+}, [])
 
   return (
     <div>
@@ -84,8 +92,8 @@ function Todo() {
           {items.map((val) => {
             return (
               <div className="list" key={val.id}>
-                {val.name}
-                <span>
+                {val.title}
+                <span style={{display:"flex"}}>
                 <button className="edt-btn" onClick={() => editHandler(val.id)}>Edit</button>
                 <button className="dlt-btn" onClick={() => deleteHandler(val.id)}>Delete</button>
                 </span>

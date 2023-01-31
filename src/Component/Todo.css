@@ -18,19 +18,24 @@
 }
 .edt-btn {
   background-color: darkorange;
+
   color: white;
   font-size: 12px;
-  padding: 4px 6px;
+  /* display: flex; */
+  /* padding: 4px 4px; */
+  height: 20px;
   border-radius: 3px;
   cursor: pointer;
   border: none;
   margin-right: 2px;
+  margin-top: 10px;
 }
 .dlt-btn {
   background-color: red;
   color: white;
   font-size: 12px;
   padding: 4px 6px;
+  /* display: flex; */
   border-radius: 3px;
   margin: 10px 0px;
   cursor: pointer;
@@ -40,7 +45,7 @@
   color: #fff;
   width: 300px;
   margin: 20px auto;
-  height: 50px;
+  /* height: 50px; */
   background-color: #bf07ac;
   border-radius: 5px;
   cursor: pointer;
