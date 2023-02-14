@@ -1,4 +1,4 @@
-import Todo from "./Component/todo"
+import Todo from "./component/todo"
 import './App.css'
 export default function App() {
   

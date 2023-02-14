@@ -1,110 +1,207 @@
-import { useEffect, useState, createContext } from "react";
-import axios from "axios";
+//import { useEffect, useState, createContext } from "react";
+//import axios from "axios";
+import { useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./Todo.css";
 import TodoItems from "./todoitems";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import { Typography } from "@mui/material";
+//import Button from '@mui/material/Button';
 
-export const metadata = createContext("");
+//export const metadata = createContext("");
+
+let editId;
+
 function Todo() {
+  const dispatch = useDispatch();
+  const editTodo = useSelector((state) => state.editItems);
   const [input, setInput] = useState("");
-  const [items, setItems] = useState([]);
-  const [editItem, setEditItem] = useState(true);
-  const [editedItem, setEditedItem] = useState(null);
+  const addTodo = useSelector((state) => state.items);
+
+  // const [items, setItems] = useState([]);
+  // const [editItem, setEditItem] = useState(true);
+  // const [editedItem, setEditedItem] = useState(null);
 
   ////////////////////////////////////////////////   ChangeHandler ////////////////////////////////////////////////////
   const onChange = (event) => {
     setInput(event.target.value);
-   // console.log("testing");
+    // console.log("testing");
   };
 
   /////////////////////////////////////////////      deleteHandler /////////////////////////////////////////////////////
 
-  const deleteHandler = (index) => {
-    const updateditems = items.filter((val) => {
-      return index !== val.id;
+  const deleteHandler = (id) => {
+    dispatch({
+      type: "delete-Todo",
+      id: id,
     });
-    setItems(updateditems);
+    // const updateditems = items.filter((val) => {
+    //   return index !== val.id;
+    // });
+    // setItems(updateditems);
   };
 
   /////////////////////////////////////////////      removeHandler /////////////////////////////////////////////////////
 
   const removeHandler = () => {
-    setItems([]);
+    dispatch({
+      type: "remove-Todo",
+    });
+    //setItems([]);
   };
 
   /////////////////////////////////////////////      editHandler /////////////////////////////////////////////////////
 
   const editHandler = (id) => {
-    const editedItem = items.find((value) => {
-      return value.id === id;
+    editId = id;
+    let test = addTodo.filter((curr) => {
+      return curr.id === id;
     });
-    console.log(editedItem);
-    setEditItem(false);
-    setInput(editedItem.name);
-    setEditedItem(id);
+    //console.log(test[0].data);
+    setInput(test[0].data);
+    dispatch({
+      type: "update-Todo",
+      payload: {
+        id: id,
+      },
+    });
+    // const editedItem = items.find((value) => {
+    //   return value.id === id;
+    // });
+    // console.log(editedItem);
+    // setEditItem(false);
+    // setInput(editedItem.name);
+    // setEditedItem(id);
   };
 
-  /////////////////////////////////////////////      clickHandler /////////////////////////////////////////////////////
+  /////////////////////////////////////////////      clickaddHandler /////////////////////////////////////////////////////
+  //const dummy = [1, 2, 3, 4, 5];
 
   const clickHandler = () => {
     if (!input) {
-      //alert("plz Enter data first");
-    } else if (input && !editItem) {
-      setItems(
-        items.map((val) => {
-          if (val.id === editedItem) {
-            return { ...val, name: input };
-          }
-          return val;
-        })
-      );
-      setEditItem(true);
+      alert("plz Enter data first");
+    } else if (input && !editTodo) {
+      console.log("else if");
+      dispatch({
+        type: "add-Todo",
+        payload: {
+          data: input,
+          id: editId,
+        },
+      });
       setInput("");
-      setEditedItem(null);
     } else {
-      let itemslist = { id: new Date().getTime().toString(), name: input };
-      setItems([...items, itemslist]);
+      console.log("else");
+      dispatch({
+        type: "add-Todo",
+        payload: {
+          id: Math.random(),
+          data: input,
+        },
+      });
       setInput("");
     }
+    // if (!input) {
+    //   //alert("plz Enter data first");
+    // } else if (input && !editItem) {
+    //   setItems(
+    //     items.map((val) => {
+    //       if (val.id === editedItem) {
+    //         return { ...val, title: input };
+    //       }
+    //       return val;
+    //     })
+    //   );
+    //   setEditItem(true);
+    //   setInput("");
+    //   setEditedItem(null);
+    // } else {
+    //   let itemslist = { id: new Date().getTime().toString(), title: input };
+    //   setItems([...items, itemslist]);
+    //   setInput("");
+    // }
   };
-  /////////////////////////////////////////////      clickHandler /////////////////////////////////////////////////////
+  /////////////////////////////////////////////     getdatabyApi /////////////////////////////////////////////////////
+// const getData = () =>{
+//   axios.get("http://localhost:3000/posts").then((res) => {
+//     dispatch({
+//       type: "show-data",
+//         data: res.data
+//        });
+//       });
+// }
 
-  useEffect(() => {
-    axios("https://jsonplaceholder.typicode.com/posts").then((res) => {
-      setItems(res.data);
-    });
-  }, []);
+
+//    useEffect(() => {
+//     getData(); 
+//    }, []);
 
   return (
     <div>
       <div>
-          <div className="text">Add Your Todo List Here!!</div>
-          <input
-            className="input"
+        {/* <div className="text">Add Your Todo List Here!!</div> */}
+        <Typography variant="h5" display="flex" justifyContent="center" color="white" mt={2}>
+          Add Your Todo List Here!!
+        </Typography>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          mt={2}
+          spacing={2}
+        >
+          <TextField
+            sx={{ width: "30ch" }}
+            variant="filled"
+            color="success"
             placeholder="Add Items In Todo List"
             value={input}
             onChange={onChange}
-          ></input>
-                  {editItem ? (
-            <button className="button" type="submit" onClick={clickHandler}>
-              Add Todo
-            </button>
+          />
+          {editTodo ? (
+            <Fab color="success" aria-label="add" onClick={clickHandler}>
+              <AddIcon />
+            </Fab>
           ) : (
-            <button className="button" onClick={clickHandler}>
-              Edit
-            </button>
+            //<Button variant="contained" size="small" onClick={clickHandler}>Add Todo</Button>
+            // <button className="button" onClick={clickHandler} >
+            //   Add Todo
+            // </button>
+            // <button className="button" onClick={clickHandler}>
+            //   Edit
+            // </button>
+            <Fab color="secondary" onClick={clickHandler}>
+              <EditIcon />
+            </Fab>
           )}
-          </div>
-          <div>    <metadata.Provider
-      value={{
-        removeHandler: { removeHandler },
-        editHandler: { editHandler },
-        deleteHandler: { deleteHandler },
-        items:items,
-        editItem:editItem
-      }}
-    >
-      <TodoItems />
-    </metadata.Provider></div>
+        </Stack>
+      </div>
+      {/* /////////////////////////////////// useContext ///////////////////////////////////////////////////// */}
+      {/* <div>
+        {" "}
+        <metadata.Provider
+          value={{
+            removeHandler: { removeHandler },
+            editHandler: { editHandler },
+            deleteHandler: { deleteHandler },
+            items: items,
+            editItem: editItem,
+          }}
+        >
+          <TodoItems />
+        </metadata.Provider>
+      </div> */}
+      <div>
+        <TodoItems
+          removeHandler={removeHandler}
+          editHandler={editHandler}
+          deleteHandler={deleteHandler}
+        />
+      </div>
     </div>
   );
 }
