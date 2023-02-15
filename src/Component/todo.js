@@ -1,6 +1,6 @@
 //import { useEffect, useState, createContext } from "react";
-//import axios from "axios";
-import { useState} from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./Todo.css";
 import TodoItems from "./todoitems";
@@ -9,7 +9,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 //import Button from '@mui/material/Button';
 
 //export const metadata = createContext("");
@@ -35,10 +35,13 @@ function Todo() {
   /////////////////////////////////////////////      deleteHandler /////////////////////////////////////////////////////
 
   const deleteHandler = (id) => {
-    dispatch({
-      type: "delete-Todo",
-      id: id,
-    });
+    axios.delete(`http://localhost:3000/posts/${id}`).then(() => {
+      getData();
+        });
+// dispatch({
+//         type: "delete-Todo",
+//       id:id,      
+//       });
     // const updateditems = items.filter((val) => {
     //   return index !== val.id;
     // });
@@ -86,24 +89,30 @@ function Todo() {
       alert("plz Enter data first");
     } else if (input && !editTodo) {
       console.log("else if");
-      dispatch({
-        type: "add-Todo",
-        payload: {
-          data: input,
-          id: editId,
-        },
-      });
+      const value = {
+        data:input
+      }
+      axios.put(`http://localhost:3000/posts/${editId}`,value).then(() => {
+        getData();
+        });
+      setInput(""); 
+      // dispatch({
+      //   type: "add-Todo",
+      //   payload: {
+      //     data: input,
+      //     id: editId,
+      //   },
+      // });
       setInput("");
     } else {
       console.log("else");
-      dispatch({
-        type: "add-Todo",
-        payload: {
-          id: Math.random(),
-          data: input,
-        },
-      });
-      setInput("");
+      const value = {
+        data:input
+      }
+      axios.post("http://localhost:3000/posts",value).then(() => {
+        getData();
+        });
+      setInput("");      
     }
     // if (!input) {
     //   //alert("plz Enter data first");
@@ -126,25 +135,36 @@ function Todo() {
     // }
   };
   /////////////////////////////////////////////     getdatabyApi /////////////////////////////////////////////////////
-// const getData = () =>{
-//   axios.get("http://localhost:3000/posts").then((res) => {
-//     dispatch({
-//       type: "show-data",
-//         data: res.data
-//        });
-//       });
-// }
+  const getData = () => {
+    axios.get("http://localhost:3000/posts").then((res) => {
+      dispatch({
+        type: "show-data",
+        data: res.data
+      });
+    });
+  };
 
-
-//    useEffect(() => {
-//     getData(); 
-//    }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
-    <div>
+    <Box sx={{ 
+      width: 400,
+      minHeight: 600,
+      maxHeight:700,
+      overflow: "auto",
+      borderRadius:2,
+      backgroundColor: 'secondary.main'}}>
       <div>
         {/* <div className="text">Add Your Todo List Here!!</div> */}
-        <Typography variant="h5" display="flex" justifyContent="center" color="white" mt={2}>
+        <Typography
+          variant="h5"
+          display="flex"
+          justifyContent="center"
+          color="white"
+          mt={2}
+        >
           Add Your Todo List Here!!
         </Typography>
         <Stack
@@ -202,7 +222,7 @@ function Todo() {
           deleteHandler={deleteHandler}
         />
       </div>
-    </div>
+    </Box>
   );
 }
 export default Todo;

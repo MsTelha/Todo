@@ -4,6 +4,12 @@ const initialData = { items: [], editItems: true };
 
 const stateReducer = (state = initialData, action) => {
   switch (action.type) {
+    case "show-data":
+        return {
+          items: [...action.data],
+          editItems: true,
+        };
+      break;
     case "add-Todo":
       let foundIndex = state.items.findIndex((curr) => {
         return curr.id === action.payload.id;
@@ -27,6 +33,7 @@ const stateReducer = (state = initialData, action) => {
 
         return { items: newArr, editItems: true };
       } else {
+        //console.log(action.payload);
         return {
           items: [...state.items, action.payload],
           editItems: true,

@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Chip } from "@mui/material";
+import {Box, Card, Chip } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -30,10 +30,17 @@ export default function TodoItems(props) {
   //console.log(addTodo);
   //console.log(items);
   return (
-    <div>
+    <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
       {addTodo.map((val) => {
         return (
-          <div className="list" key={val.id}>
+          <Card sx={{
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between",
+            marginTop: 2,
+            height:40,
+            width:350,
+          }} variant="outlined" key={val.id}>
             {val.data}
             {/* <span style={{ display: "flex" }}> */}
               {/* <button
@@ -62,7 +69,7 @@ export default function TodoItems(props) {
               </ThemeProvider>
               </Stack>
             {/* </span> */}
-          </div>
+          </Card>
         );
       })}
       {/* <div className="footer"> */}
@@ -70,11 +77,11 @@ export default function TodoItems(props) {
             Clear List
           </button> */}
        <ThemeProvider theme={theme}>  
-      <Stack justifyContent="center" alignItems="center" mt={2} spacing={2}>
+      <Stack justifyContent="center" alignItems="center" my={2} spacing={2}>
         <Chip color="success" label="Clear List" onClick={props.removeHandler} />
       </Stack>
       {/* </div> */}
       </ThemeProvider> 
-    </div>
+    </Box>
   );
 }

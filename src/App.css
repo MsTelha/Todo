@@ -1,7 +1,7 @@
-body {
+/* body {
   background-color: dimgray;
-}
-.App {
+} */
+/* .App {
   background-color: #3f3160;
   min-height: 600px;
   width: 400px;
@@ -9,4 +9,9 @@ body {
   max-height: 60px;
   overflow: auto;
   border-radius: 2px;
+} */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
