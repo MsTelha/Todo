@@ -1,14 +1,12 @@
-import { createStore } from "redux";
+const initialData = { items: [], editItems: true, toggle:false};
 
-const initialData = { items: [], editItems: true };
-
-const stateReducer = (state = initialData, action) => {
+export const stateReducer = (state = initialData, action) => {
   switch (action.type) {
     case "show-data":
-        return {
-          items: [...action.data],
-          editItems: true,
-        };
+      return {
+        items: [...action.data],
+        editItems: true,
+      };
       break;
     case "add-Todo":
       let foundIndex = state.items.findIndex((curr) => {
@@ -26,10 +24,10 @@ const stateReducer = (state = initialData, action) => {
         };
         let newArr = [...state.items];
 
-        console.log(obj);
+        //console.log(obj);
         newArr[foundIndex] = obj;
 
-        console.log(newArr);
+        //console.log(newArr);
 
         return { items: newArr, editItems: true };
       } else {
@@ -60,12 +58,14 @@ const stateReducer = (state = initialData, action) => {
     case "update-Todo":
       return { items: state.items, editItems: false };
       break;
-
+      case "toggle":
+        return {
+          toggle: !state.toggle,
+            items: state.items,
+            editItems: true,
+        }
+      break;
     default:
       return state;
-      break;
   }
 };
-const store = createStore(stateReducer);
-
-export default store;
