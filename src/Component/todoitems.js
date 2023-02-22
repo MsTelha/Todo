@@ -21,7 +21,7 @@ const theme = createTheme({
 });
 
 export default function TodoItems(props) {
-  const addTodo = useSelector((state) => state.items);
+  const addTodo = useSelector((state) => state.stateSlice.items);
 
   //console.log(addTodo);
   return (

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getData, delHandler, addHandler, editingHandler } from "../redux/actions/todoActions";
-import TodoItems from "./todoitems";
+import { stateActions } from "../redux/reducer/stateReducer";
+import TodoItems from "./todoItems";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,49 +13,46 @@ let editId;
 
 function Todo() {
   const dispatch = useDispatch();
-  const editTodo = useSelector((state) => state.editItems);
-  const stateToggle = useSelector((state) => state.toggle);
+  const editTodo = useSelector((state) => state.stateSlice.editItems);
+  const stateToggle = useSelector((state) => state.stateSlice.toggle);
+  const addTodo = useSelector((state) => state.stateSlice.items);
   const [input, setInput] = useState("");
-  const addTodo = useSelector((state) => state.items);
-
+console.log(editTodo);
   ////////////////////////////////////////////////   ChangeHandler ////////////////////////////////////////////////////
   const onChange = (event) => {
     setInput(event.target.value);
-    console.log("testing");
+    //console.log("testing");
   };
 
   /////////////////////////////////////////////      deleteHandler /////////////////////////////////////////////////////
 
   const deleteHandler = (id) => {
-    dispatch(delHandler(id));
+    dispatch({
+      type: "deleteTodo",
+      payload:id    
+    });
+  
   };
 
   /////////////////////////////////////////////      removeHandler /////////////////////////////////////////////////////
 
   const removeHandler = () => {
-    dispatch({
-      type: "remove-Todo",
-    });
+    dispatch(stateActions.removeTodo());
   };
 
   /////////////////////////////////////////////      editHandler /////////////////////////////////////////////////////
-
   const editHandler = (id) => {
     editId = id;
+    console.log(editId);
     let test = addTodo.filter((curr) => {
       return curr.id === id;
     });
-    //console.log(test[0].data);
+    console.log(test[0].data);
     setInput(test[0].data);
-    dispatch({
-      type: "update-Todo",
-      payload: {
-        id: id,
-      },
-    });
+    dispatch(stateActions.updateTodo());
   };
 
-  /////////////////////////////////////////////      clickaddHandler /////////////////////////////////////////////////////
+  /////////////////////////////////////////////      addHandler /////////////////////////////////////////////////////
 
   const clickHandler = () => {
     if (!input) {
@@ -63,20 +60,32 @@ function Todo() {
     }
     /////////////////////////////////////////////////////// To Edit //////////////////////////////////////////////////////
     else if (input && !editTodo) {
-      dispatch(editingHandler(editId, input));
+      dispatch({
+        type: "updateTodo",
+        payload:{
+          editId,
+          input
+        }
+      });
+     // dispatch(updateTodo(editId, input));
       setInput("");
     }
     /////////////////////////////////////////////////////// Add Todo //////////////////////////////////////////////////////
     else {
       console.log("else");
-       dispatch(addHandler(input));  
+      dispatch({
+        type:"addedTodo",
+        input
+      })
       setInput("");
     }
   };
 
   useEffect(() => {
-    dispatch(getData());
-  }, [stateToggle]);
+    dispatch({
+      type: "showData",
+    });
+  }, [dispatch, stateToggle]);
 
   return (
     <Box
